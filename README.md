@@ -37,6 +37,21 @@ npm run new:page -- "about"
 - 已配置工作流：`.github/workflows/deploy.yml`
 - 当代码推送到 `main` 分支时，GitHub Actions 会自动构建并发布到 GitHub Pages
 
+### Pages 设置要求
+
+- 仓库 `Settings -> Pages -> Build and deployment -> Source` 必须选择 `GitHub Actions`
+- 不要选择 `Deploy from a branch`，否则会触发 Jekyll 解析根目录 `_config.yml`
+
+### 常见报错
+
+如果出现 `The landscape theme could not be found`，说明正在走 Jekyll 流程，而不是 Hexo Actions 流程。
+
+处理方式：
+
+1. 将 Pages Source 改为 `GitHub Actions`
+2. 确认工作流 `Deploy Hexo To GitHub Pages` 执行成功
+3. 重新推送一次 `main` 分支触发部署
+
 ## 导航与页面
 
 - 已配置顶部导航：Home / Archives / Categories / Tags / About
