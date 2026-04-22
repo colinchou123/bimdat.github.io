@@ -3,9 +3,9 @@ title: {{ title }}
 date: {{ date }}
 description: 
 categories:
-	- 草稿
+  - 草稿
 tags:
-	- draft
+  - draft
 ---
 
 ## 草稿说明

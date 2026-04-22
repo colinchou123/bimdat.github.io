@@ -1,13 +1,13 @@
 menu:
-	Home: /
-	Archives: /archives/
-	Categories: /categories/
-	Tags: /tags/
-	About: /about/
+  Home: /
+  Archives: /archives/
+  Categories: /categories/
+  Tags: /tags/
+  About: /about/
 
 widgets:
-	- category
-	- tag
-	- archive
+  - category
+  - tag
+  - archive
 
 favicon: /css/images/favicon.ico

@@ -4,9 +4,9 @@ date: {{ date }}
 updated: {{ date }}
 description: 
 categories:
-	- 默认分类
+  - 默认分类
 tags:
-	- 示例
+  - 示例
 ---
 
 ## 概要

@@ -28,6 +28,11 @@ npm run new:post -- "文章标题"
 
 文章会生成在 `source/_posts` 目录，使用 Markdown 编写即可。
 
+图片资源支持相对路径目录（例如 Typora 风格 `文章名.assets/图片.png`）：
+
+- 在文章中可直接写：`![](Discussion-on-Revit-Section-Geometry-Derivation.assets/1776840564096.png)`
+- 执行 `npm run build` 或 `npm run server` 时，会自动复制 `source/_posts/<文章名>.assets` 到对应的 `public/<文章路由>/<文章名>.assets`，资源可直接访问
+
 创建页面：
 
 npm run new:page -- "about"
@@ -57,6 +62,7 @@ npm run new:page -- "about"
 - 已配置顶部导航：Home / Archives / Categories / Tags / About
 - About 页面：`source/about/index.md`
 - 主题配置：`_config.landscape.yml`
+- 文章页已支持悬浮 TOC（目录）组件（桌面端显示，移动端自动隐藏）
 
 ## 模板规范
 

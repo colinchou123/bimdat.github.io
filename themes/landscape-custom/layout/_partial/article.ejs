@@ -1,0 +1,134 @@
+<article id="<%= post.layout %>-<%= post.slug %>" class="h-entry article article-type-<%= post.layout %>" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <% 
+    var renderedContent = post.content;
+    var showMoreLink = false;
+    var moreLinkHref = url_for(post.path);
+    var summaryLength = 350;
+
+    if (index) {
+      var plainText = strip_html(post.content || '').trim();
+      if (plainText.length > summaryLength) {
+        plainText = plainText.substring(0, summaryLength) + '...';
+      }
+      var inlineMoreText = escape_html(theme.excerpt_link || 'Read More');
+      renderedContent = '<p>' + escape_html(plainText) + ' <a class="inline-read-more" href="' + moreLinkHref + '">' + inlineMoreText + '</a></p>';
+    }
+  %>
+  <div class="article-meta">
+    <%- partial('post/date', {class_name: 'article-date', date_format: null}) %>
+    <%- partial('post/category') %>
+  </div>
+  <div class="article-inner">
+    <%- partial('post/gallery') %>
+    <% if (post.link || post.title){ %>
+      <header class="article-header">
+        <%- partial('post/title', {class_name: 'p-name article-title'}) %>
+      </header>
+    <% } %>
+    <div class="e-content article-entry" itemprop="articleBody">
+      <% if (index){ %>
+        <%- renderedContent %>
+        <% if (theme.excerpt_link && showMoreLink){ %>
+          <p class="article-more-link">
+            <a href="<%- moreLinkHref %>"><%= theme.excerpt_link %></a>
+          </p>
+        <% } %>
+      <% } else { %>
+        <%- renderedContent %>
+      <% } %>
+    </div>
+    <% if (!index){ %>
+      <aside id="floating-toc" class="floating-toc is-hidden" aria-label="Table of contents">
+        <div class="floating-toc-header">
+          <span class="floating-toc-title">On this page</span>
+          <button type="button" class="floating-toc-toggle" aria-label="Toggle TOC">Hide</button>
+        </div>
+        <%- toc(post.content, { class: 'floating-toc-list', list_number: false, max_depth: 4 }) %>
+      </aside>
+      <script>
+        (function () {
+          var toc = document.getElementById('floating-toc');
+          if (!toc || toc.dataset.ready === '1') return;
+
+          var links = Array.prototype.slice.call(toc.querySelectorAll('.floating-toc-list-link'));
+          if (links.length < 2) return;
+
+          var headings = links.map(function (link) {
+            var href = link.getAttribute('href') || '';
+            var id = href.replace(/^#/, '');
+            return document.getElementById(decodeURIComponent(id));
+          }).filter(Boolean);
+          if (!headings.length) return;
+
+          toc.dataset.ready = '1';
+          toc.classList.remove('is-hidden');
+          var toggle = toc.querySelector('.floating-toc-toggle');
+
+          links.forEach(function (link) {
+            link.addEventListener('click', function (e) {
+              e.preventDefault();
+              var href = link.getAttribute('href') || '';
+              var id = href.replace(/^#/, '');
+              var target = document.getElementById(decodeURIComponent(id));
+              if (!target) return;
+              target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              history.replaceState(null, '', '#' + target.id);
+            });
+          });
+
+          toggle.addEventListener('click', function () {
+            var collapsed = toc.classList.toggle('is-collapsed');
+            toggle.textContent = collapsed ? 'Show' : 'Hide';
+          });
+
+          function markActive() {
+            var active = headings[0];
+            for (var i = 0; i < headings.length; i++) {
+              var rect = headings[i].getBoundingClientRect();
+              if (rect.top <= 110) active = headings[i];
+              else break;
+            }
+
+            links.forEach(function (link) {
+              var href = link.getAttribute('href') || '';
+              var isActive = decodeURIComponent(href.replace(/^#/, '')) === active.id;
+              link.classList.toggle('is-active', isActive);
+            });
+          }
+
+          markActive();
+          window.addEventListener('scroll', markActive, { passive: true });
+        })();
+      </script>
+    <% } %>
+    <footer class="article-footer">
+      <a data-url="<%- post.permalink %>" data-id="<%= post._id %>" data-title="<%= post.title %>" class="article-share-link"><span class="fa fa-share"><%= __('share') %></span></a>
+      <% if (post.comments && theme.disqus_shortname){ %>
+        <a href="<%- post.permalink %>#disqus_thread" class="article-comment-link"><span class="fa fa-comment"><%= __('comment') %></span></a>
+      <% } %>
+      <% if (post.comments && theme.valine.enable && theme.valine.appId && theme.valine.appKey ){ %>
+        <a href="<%- url_for(post.path) %>#comments" class="article-comment-link">
+          <span class="post-comments-count valine-comment-count fa fa-comment" data-xid="<%- url_for(post.path) %>" itemprop="commentCount"></span>
+          <%= __('comment') %>
+        </a>
+      <% } %>
+      <%- partial('post/tag') %>
+    </footer>
+  </div>
+  <% if (!index){ %>
+    <%- partial('post/nav') %>
+  <% } %>
+</article>
+
+<% if (!index && post.comments && theme.disqus_shortname){ %>
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+<% } %>
+<% if (!index && post.comments && theme.valine.enable && theme.valine.appId && theme.valine.appKey){ %>
+  <section id="comments" class="vcomment">
+
+  </section>
+<% } %>
